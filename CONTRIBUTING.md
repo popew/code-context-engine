@@ -7,8 +7,8 @@ Thanks for your interest in contributing! This guide will help you get started.
 1. **Fork the repo** on GitHub
 2. **Clone your fork**:
    ```bash
-   git clone git@github.com:YOUR_USERNAME/Claude-Context-Engine.git
-   cd Claude-Context-Engine
+   git clone git@github.com:YOUR_USERNAME/code-context-engine.git
+   cd code-context-engine
    ```
 3. **Set up the development environment**:
    ```bash

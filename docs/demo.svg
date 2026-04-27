@@ -52,30 +52,30 @@
   <circle cx="40" cy="18" r="6" fill="#f9e2af"/>
   <circle cx="60" cy="18" r="6" fill="#a6e3a1"/>
   <!-- Title -->
-  <text x="400" y="22" text-anchor="middle" class="title-text">claude-context-engine demo</text>
+  <text x="400" y="22" text-anchor="middle" class="title-text">code-context-engine demo</text>
 
   <g clip-path="url(#terminal-clip)">
     <!-- Step 1: Install -->
     <text y="62" x="16" class="line l1">
-      <tspan class="prompt">$ </tspan><tspan class="output">pip install claude-context-engine</tspan>
+      <tspan class="prompt">$ </tspan><tspan class="output">pip install code-context-engine</tspan>
     </text>
-    <text y="80" x="16" class="line l2 output">Successfully installed claude-context-engine-<tspan class="number">0.1.0</tspan></text>
+    <text y="80" x="16" class="line l2 output">Successfully installed code-context-engine-<tspan class="number">0.3.1</tspan></text>
 
     <!-- Step 2: Init -->
     <text y="110" x="16" class="line l3">
-      <tspan class="prompt">$ </tspan><tspan class="output">cd my-project &amp;&amp; claude-context-engine init</tspan>
+      <tspan class="prompt">$ </tspan><tspan class="output">cd my-project &amp;&amp; code-context-engine init</tspan>
     </text>
     <text y="128" x="16" class="line l4 output">Git hooks installed: <tspan class="number">2</tspan> hooks</text>
-    <text y="146" x="16" class="line l5 output">Storage directory: ~/.claude-context-engine/projects/my-project/</text>
+    <text y="146" x="16" class="line l5 output">Storage directory: ~/.code-context-engine/projects/my-project/</text>
     <text y="164" x="16" class="line l6 output">Running initial index...</text>
     <text y="182" x="16" class="line l7 output">Indexed <tspan class="number">847</tspan> chunks from <tspan class="number">156</tspan> files</text>
     <text y="200" x="16" class="line l8 output">Initialization complete.</text>
 
     <!-- Step 3: Status -->
     <text y="230" x="16" class="line l9">
-      <tspan class="prompt">$ </tspan><tspan class="output">claude-context-engine status</tspan>
+      <tspan class="prompt">$ </tspan><tspan class="output">code-context-engine status</tspan>
     </text>
-    <text y="248" x="16" class="line l10 output">Storage path: ~/.claude-context-engine/projects/my-project</text>
+    <text y="248" x="16" class="line l10 output">Storage path: ~/.code-context-engine/projects/my-project</text>
     <text y="266" x="16" class="line l11">
       <tspan class="output">Output compression: </tspan><tspan class="prompt">standard</tspan><tspan class="output"> — Drops articles, uses fragments. ~</tspan><tspan class="number">65%</tspan><tspan class="output"> savings.</tspan>
     </text>
