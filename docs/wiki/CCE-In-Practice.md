@@ -322,6 +322,6 @@ This is why the savings are multiplicative, not additive. Each search is a targe
 
 ## See Also
 
-- [How It Works](How-It-Works) — the full technical pipeline with all 9 stages
-- [Configuration](Configuration) — tuning `top_k`, `confidence_threshold`, and compression level
-- [CLI Reference](CLI-Reference) — all commands with examples
+- [How It Works](How-It-Works.md) — the full technical pipeline with all 9 stages
+- [Configuration](Configuration.md) — tuning `top_k`, `confidence_threshold`, and compression level
+- [CLI Reference](CLI-Reference.md) — all commands with examples

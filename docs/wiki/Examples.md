@@ -497,6 +497,6 @@ You do not invoke these tools — Claude does. They trigger on natural questions
 
 ## See Also
 
-- [CCE In Practice](CCE-In-Practice) — the same scenarios with token counts and internals
-- [CLI Reference](CLI-Reference) — all `cce` commands
-- [Configuration](Configuration) — tuning retrieval, compression, and ignored files
+- [CCE In Practice](CCE-In-Practice.md) — the same scenarios with token counts and internals
+- [CLI Reference](CLI-Reference.md) — all `cce` commands
+- [Configuration](Configuration.md) — tuning retrieval, compression, and ignored files

@@ -173,17 +173,17 @@ Once restarted, Claude can call `context_search` and the eight companion MCP too
 
 ## Documentation
 
-Full documentation is available on the [GitHub Wiki](https://github.com/elara-labs/code-context-engine/wiki):
+Full documentation is available in the [docs/wiki](docs/wiki) directory:
 
 | Page | What it covers |
 |------|---------------|
-| [Examples](https://github.com/elara-labs/code-context-engine/wiki/Examples) | Real conversations — what you type, what Claude does |
-| [CCE In Practice](https://github.com/elara-labs/code-context-engine/wiki/CCE-In-Practice) | Token counts and internals for each scenario |
-| [How It Works](https://github.com/elara-labs/code-context-engine/wiki/How-It-Works) | Full 9-stage pipeline: indexing, retrieval, compression |
-| [CLI Reference](https://github.com/elara-labs/code-context-engine/wiki/CLI-Reference) | Every command with expected output |
-| [Tech Stack](https://github.com/elara-labs/code-context-engine/wiki/Tech-Stack) | Every library: what it does, where it's used, why chosen |
-| [Project Commands](https://github.com/elara-labs/code-context-engine/wiki/Project-Commands) | Rules, preferences, and per-project commands for Claude |
-| [Configuration](https://github.com/elara-labs/code-context-engine/wiki/Configuration) | All config options, global and per-project |
+| [Examples](docs/wiki/Examples.md) | Real conversations — what you type, what Claude does |
+| [CCE In Practice](docs/wiki/CCE-In-Practice.md) | Token counts and internals for each scenario |
+| [How It Works](docs/wiki/How-It-Works.md) | Full 9-stage pipeline: indexing, retrieval, compression |
+| [CLI Reference](docs/wiki/CLI-Reference.md) | Every command with expected output |
+| [Tech Stack](docs/wiki/Tech-Stack.md) | Every library: what it does, where it's used, why chosen |
+| [Project Commands](docs/wiki/Project-Commands.md) | Rules, preferences, and per-project commands for Claude |
+| [Configuration](docs/wiki/Configuration.md) | All config options, global and per-project |
 
 ---
 
@@ -555,7 +555,7 @@ cce commands add before_push 'composer test'
 cce commands add-custom deploy 'kubectl apply -f k8s/'
 ```
 
-Claude sees these at every session start and follows them automatically. Supports workspace-level configs for multi-project directories. See the [Project Commands wiki](https://github.com/elara-labs/code-context-engine/wiki/Project-Commands) for details.
+Claude sees these at every session start and follows them automatically. Supports workspace-level configs for multi-project directories. See [Project Commands](docs/wiki/Project-Commands.md) for details.
 ---
 
 ## Optional Ollama Support

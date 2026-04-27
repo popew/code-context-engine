@@ -344,7 +344,7 @@ cce commands remove before_push 'composer test'
 cce commands remove custom deploy
 ```
 
-**Workspace support:** Place a `.cce/commands.yaml` in a parent directory to define shared rules across multiple projects. Project configs extend the workspace. See [Project Commands](Project-Commands) for full details.
+**Workspace support:** Place a `.cce/commands.yaml` in a parent directory to define shared rules across multiple projects. Project configs extend the workspace. See [Project Commands](Project-Commands.md) for full details.
 
 ---
 

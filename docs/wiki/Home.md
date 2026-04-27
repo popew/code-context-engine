@@ -25,13 +25,13 @@ Over 30 queries in a typical project, that difference compounds into real API co
 
 ## Quick Navigation
 
-- [Examples](Examples) — real conversations showing what you type and what Claude does
-- [CCE In Practice](CCE-In-Practice) — same scenarios with token counts and internals
-- [How It Works](How-It-Works) — deep dive into indexing, retrieval, graph expansion, compression
-- [CLI Reference](CLI-Reference) — every command with examples and expected output
-- [Project Commands](Project-Commands) — rules, preferences, and per-project commands for Claude
-- [Tech Stack](Tech-Stack) — every library: what it does, where it's used, why it was chosen
-- [Configuration](Configuration) — all config options, global and per-project
+- [Examples](Examples.md) — real conversations showing what you type and what Claude does
+- [CCE In Practice](CCE-In-Practice.md) — same scenarios with token counts and internals
+- [How It Works](How-It-Works.md) — deep dive into indexing, retrieval, graph expansion, compression
+- [CLI Reference](CLI-Reference.md) — every command with examples and expected output
+- [Project Commands](Project-Commands.md) — rules, preferences, and per-project commands for Claude
+- [Tech Stack](Tech-Stack.md) — every library: what it does, where it's used, why it was chosen
+- [Configuration](Configuration.md) — all config options, global and per-project
 
 ## Getting Started in 3 Steps
 
