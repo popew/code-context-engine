@@ -1117,7 +1117,9 @@ def _run_savings_report(config, *, as_json: bool = False, all_projects: bool = F
 
     # Opus 4 input pricing: $15 per 1M tokens
     _COST_PER_TOKEN = 15 / 1_000_000
-    _BAR_WIDTH = 20
+    _GRID_COLS = 10
+    _FILLED = "⛁"
+    _EMPTY = "⛶"
 
     def _fmt_tokens(n: int) -> str:
         if n >= 1_000_000:
@@ -1133,12 +1135,16 @@ def _run_savings_report(config, *, as_json: bool = False, all_projects: bool = F
         return f"${cost:.2f}"
 
     def _bar(saved_pct: int) -> str:
-        filled = max(0, min(_BAR_WIDTH, round(saved_pct / 100 * _BAR_WIDTH)))
-        empty = _BAR_WIDTH - filled
-        return (
-            click.style("█" * filled, fg="green")
-            + click.style("░" * empty, dim=True)
-        )
+        """Render ⛁ ⛁ ⛁ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ grid where filled = tokens used."""
+        used_pct = 100 - saved_pct
+        filled = max(0, min(_GRID_COLS, round(used_pct / 100 * _GRID_COLS)))
+        cells = []
+        for i in range(_GRID_COLS):
+            if i < filled:
+                cells.append(click.style(_FILLED, fg="cyan"))
+            else:
+                cells.append(click.style(_EMPTY, dim=True))
+        return " ".join(cells)
 
     def _print_project(name: str, stats: dict) -> None:
         full_file = stats.get("full_file_tokens", 0)
