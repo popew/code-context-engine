@@ -1,7 +1,7 @@
 [project]
 name = "code-context-engine"
 version = "0.4.4"
-description = "Index your codebase. AI searches instead of re-reading files. Save 70%+ on tokens. Works with Claude Code, Cursor, VS Code, Gemini CLI, and Codex."
+description = "Index your codebase. AI searches instead of re-reading files. 93% token savings, benchmarked on FastAPI. Works with Claude Code, Cursor, VS Code, Gemini CLI, and Codex."
 readme = {file = "README.md", content-type = "text/markdown"}
 license = "MIT"
 authors = [
@@ -10,7 +10,7 @@ authors = [
 ]
 keywords = ["claude", "context", "mcp", "llm", "code-indexing", "vector-search"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
@@ -42,6 +42,7 @@ dependencies = [
     # capture path without it. Was originally optional; promoted to core
     # because hooks are core to the memory feature.
     "aiohttp>=3.9",
+    "psutil>=5.9",
 ]
 
 [project.urls]

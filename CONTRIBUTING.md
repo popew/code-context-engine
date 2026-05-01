@@ -53,7 +53,7 @@ src/context_engine/
   daemon.py           # Background daemon orchestrator
   event_bus.py        # Async event system
   indexer/            # Code chunking, embedding, file watching
-  storage/            # LanceDB vectors, Kuzu graph, remote backend
+  storage/            # sqlite-vec vectors, SQLite graph, remote backend
   retrieval/          # Hybrid search, confidence scoring
   compression/        # LLM and fallback compression
   integration/        # MCP server, session capture

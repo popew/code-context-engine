@@ -40,6 +40,14 @@
 
 ---
 
+## System requirements
+
+- Python 3.11+
+- A C compiler and `cmake` (needed to build tree-sitter grammars)
+  - **macOS:** `xcode-select --install`
+  - **Ubuntu/Debian:** `sudo apt install build-essential cmake`
+  - **Windows:** Visual Studio Build Tools (C++ workload)
+
 ## Install and see savings in 60 seconds
 
 ```bash

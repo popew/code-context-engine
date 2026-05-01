@@ -90,11 +90,8 @@ class Config:
     storage_path: str = str(_CCE_HOME / "projects")
 
     def detect_resource_profile(self) -> str:
-        try:
-            import psutil
-            ram_gb = psutil.virtual_memory().total / (1024 ** 3)
-        except ImportError:
-            ram_gb = 16
+        import psutil
+        ram_gb = psutil.virtual_memory().total / (1024 ** 3)
         if ram_gb >= 32:
             return "full"
         if ram_gb >= 12:
