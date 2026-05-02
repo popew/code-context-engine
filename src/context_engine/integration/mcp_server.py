@@ -1355,7 +1355,10 @@ class ContextEngineMCP:
                     f"({saved:,} saved, {pct}%)"
                 )
         else:
-            status_parts.append("Token savings: no queries recorded yet")
+            status_parts.append(
+                "Token savings: waiting for first context_search call. "
+                "Stats populate automatically after searches."
+            )
         return [TextContent(type="text", text="\n".join(status_parts))]
 
     async def _handle_reindex(self, args):

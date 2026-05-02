@@ -445,7 +445,8 @@ def _show_welcome_banner(config) -> None:
         if queries > 0:
             left_lines.append(f" {G}●{R} Savings      {GB}{saved_pct}%{R} over {C}{queries}{R} queries")
         elif full_file > 0:
-            left_lines.append(f" {D}○ Savings      no queries yet{R}")
+            left_lines.append(f" {D}○ Savings      waiting for first search{R}")
+            left_lines.append(f"   {D}stats update after context_search calls{R}")
     else:
         left_lines.append(f" {Y}○ Not indexed{R}")
         left_lines.append(f"   {D}run: cce init{R}")

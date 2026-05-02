@@ -1229,7 +1229,7 @@ async function loadOverviewPanels() {
       );
     } else {
       document.getElementById('chart-token-savings').innerHTML =
-        '<div class="empty"><span class="empty-title">No queries yet</span><span class="empty-hint">Run context_search via MCP to start tracking</span></div>';
+        '<div class="empty"><span class="empty-title">Waiting for first search</span><span class="empty-hint">Stats populate automatically after context_search calls</span></div>';
     }
 
     // ── File Health Donut ──

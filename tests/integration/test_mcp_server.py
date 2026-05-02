@@ -128,7 +128,7 @@ async def test_index_status_no_queries(tmp_path):
     server = _make_server(tmp_path)
     result = await server._handle_index_status()
     text = result[0].text
-    assert "no queries recorded yet" in text
+    assert "waiting for first context_search call" in text
 
 
 @pytest.mark.asyncio
