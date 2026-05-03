@@ -408,3 +408,5 @@ MIT. See [LICENSE](LICENSE).
 <p align="center">
   <strong>If CCE saves you tokens, give it a star.</strong>
 </p>
+
+<!-- mcp-name: io.github.elara-labs/code-context-engine -->
