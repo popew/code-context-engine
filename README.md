@@ -400,16 +400,6 @@ See [CHANGELOG.md](CHANGELOG.md) for shipped features.
 
 ---
 
-## Star History
-
-<p align="center">
-  <a href="https://star-history.com/#elara-labs/code-context-engine&Date">
-    <img src="https://api.star-history.com/svg?repos=elara-labs/code-context-engine&type=Date" alt="Star History" width="600">
-  </a>
-</p>
-
----
-
 ## Contributing
 
 Contributions welcome. See [https://github.com/elara-labs/code-context-engine/blob/main/CONTRIBUTING.md](https://github.com/elara-labs/code-context-engine/blob/main/CONTRIBUTING.md) for setup.
