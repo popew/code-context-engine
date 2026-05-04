@@ -167,14 +167,25 @@ We benchmarked CCE against [FastAPI](https://github.com/fastapi/fastapi) (53 sou
 
 Output compression (reducing Claude's reply length) provides additional savings (~65% estimated) but is not included in the headline number above.
 
+### Multi-language benchmarks
+
+| Repo | Language | Files | Retrieval savings | Recall@10 |
+|------|----------|-------|-------------------|-----------|
+| [FastAPI](benchmarks/results/fastapi.md) | Python | 53 | **94%** | 0.90 |
+| [chi](benchmarks/results/chi.md) | Go | 94 | **76%** | 0.67 |
+| [fiber](benchmarks/results/fiber.md) | Go (monorepo) | 396 | **93%** | 0.07 |
+
+Go's shorter files reduce the retrieval headroom (smaller baseline). Monorepos dilute recall at top-10 (fiber). Middleware queries with one-feature-per-file hit R=1.00 consistently.
+
 **Reproduce it yourself:**
 
 ```bash
 pip install code-context-engine
 python benchmarks/run_benchmark.py --repo https://github.com/fastapi/fastapi.git --source-dir fastapi
+python benchmarks/run_benchmark.py --repo https://github.com/go-chi/chi.git --source-dir .
 ```
 
-Full results in [`benchmarks/results/fastapi.md`](benchmarks/results/fastapi.md). Queries and methodology in [`benchmarks/`](benchmarks/).
+Full results in [`benchmarks/results/`](benchmarks/results/). Queries and methodology in [`benchmarks/`](benchmarks/).
 
 ---
 
@@ -397,7 +408,8 @@ No GPU required. Embedding model runs on CPU via ONNX Runtime.
 
 ## Roadmap
 
-- [ ] Multi-repo benchmarks (Django, Express, a Go project)
+- [x] Multi-repo benchmarks (FastAPI, chi, fiber)
+- [ ] More benchmarks (Django, Express)
 - [ ] Tree-sitter support for C, C++, Ruby, Swift, Kotlin
 - [ ] Docker support for remote mode
 
