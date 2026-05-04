@@ -2,6 +2,23 @@
 
 All notable changes to Code Context Engine are documented here.
 
+## Shipped Features
+
+- Semantic indexing + hybrid retrieval + graph expansion
+- Cross-session memory (decisions, code areas, session recall)
+- Web dashboard with live charts
+- Token savings tracking with dollar estimates
+- Output compression (off / lite / standard / max)
+- Content-hash embedding cache (96% hit rate on re-index)
+- sqlite-vec migration (99% smaller install)
+- Dynamic pricing from Anthropic docs
+- 7-layer security (secrets, PII, path traversal, audit log)
+- Clean uninstall (removes all CCE artifacts)
+- AST-aware chunking for PHP, Go, Rust, Java (tree-sitter)
+- Multi-editor support (Cursor, VS Code/Copilot, Gemini CLI, Codex, OpenCode)
+- Reproducible benchmark suite (94% savings on FastAPI, per-layer breakdown)
+- Session savings visibility (shown at every session start)
+
 ## [0.4.8] - 2026-05-01
 
 ### Added

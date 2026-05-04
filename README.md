@@ -1,45 +1,46 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/elara-labs/code-context-engine/main/docs/logo.svg" alt="Code Context Engine" width="160">
+  <img src="https://raw.githubusercontent.com/elara-labs/code-context-engine/main/docs/logo.svg" alt="Code Context Engine" width="140">
 </p>
 
 <h1 align="center">Code Context Engine</h1>
 
 <p align="center">
-  <strong>Index your codebase. AI searches instead of re-reading files. 94% token savings, benchmarked.</strong>
+  <strong>Index your codebase. AI searches instead of re-reading files.<br>94% token savings, reproducibly benchmarked.</strong>
+</p>
+
+<br>
+
+<p align="center">
+  <a href="https://pypi.org/project/code-context-engine/"><img src="https://img.shields.io/pypi/v/code-context-engine?style=flat-square&color=blue&label=PyPI" alt="PyPI"></a>
+  <a href="https://github.com/elara-labs/code-context-engine/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/elara-labs/code-context-engine/ci.yml?style=flat-square&label=CI" alt="CI"></a>
+  <a href="https://registry.modelcontextprotocol.io/?q=code-context-engine"><img src="https://img.shields.io/badge/MCP_Registry-listed-brightgreen?style=flat-square" alt="MCP Registry"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-yellow?style=flat-square" alt="MIT License"></a>
+  <a href="https://github.com/elara-labs/code-context-engine"><img src="https://img.shields.io/github/stars/elara-labs/code-context-engine?style=flat-square&label=stars" alt="Stars"></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/elara-labs/code-context-engine/actions/workflows/ci.yml"><img src="https://github.com/elara-labs/code-context-engine/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://pypi.org/project/code-context-engine/"><img src="https://img.shields.io/pypi/v/code-context-engine?color=blue&label=PyPI" alt="PyPI"></a>
-  <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.11+-blue.svg" alt="Python 3.11+"></a>
-  <img src="https://img.shields.io/badge/macOS-000000?logo=apple&logoColor=white" alt="macOS">
-  <img src="https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black" alt="Linux">
-  <img src="https://img.shields.io/badge/Windows-0078D6?logo=windows&logoColor=white" alt="Windows">
-  <a href="https://modelcontextprotocol.io"><img src="https://img.shields.io/badge/MCP-compatible-green.svg" alt="MCP Compatible"></a>
-  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT License"></a>
-  <a href="https://github.com/elara-labs/code-context-engine"><img src="https://img.shields.io/github/stars/elara-labs/code-context-engine?style=social" alt="Stars"></a>
+  <sub>Python 3.11+ · macOS · Linux · Windows</sub>
+</p>
+
+<br>
+
+<p align="center">
+  <a href="#install-and-see-savings-in-60-seconds"><img src="https://img.shields.io/badge/Claude_Code-352318?style=for-the-badge&logo=anthropic&logoColor=D4A27F" alt="Claude Code"></a>&nbsp;
+  <a href="#install-and-see-savings-in-60-seconds"><img src="https://img.shields.io/badge/VS_Code-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white" alt="VS Code"></a>&nbsp;
+  <a href="#install-and-see-savings-in-60-seconds"><img src="https://img.shields.io/badge/Cursor-000?style=for-the-badge" alt="Cursor"></a>&nbsp;
+  <a href="#install-and-see-savings-in-60-seconds"><img src="https://img.shields.io/badge/Gemini_CLI-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Gemini CLI"></a>&nbsp;
+  <a href="#install-and-see-savings-in-60-seconds"><img src="https://img.shields.io/badge/Codex_CLI-412991?style=for-the-badge" alt="Codex CLI"></a>&nbsp;
+  <a href="#install-and-see-savings-in-60-seconds"><img src="https://img.shields.io/badge/OpenCode-22C55E?style=for-the-badge&logo=gnometerminal&logoColor=white" alt="OpenCode"></a>
 </p>
 
 <p align="center">
-  <strong>Works with your editor</strong>
+  <sub>One command. Auto-detects your editor. Zero cloud, zero config.</sub>
 </p>
 
-<p align="center">
-  <a href="#install-and-see-savings-in-60-seconds"><img src="https://img.shields.io/badge/Claude_Code-D4A27F?style=for-the-badge&logo=anthropic&logoColor=black" alt="Claude Code" height="36"></a>&nbsp;&nbsp;
-  <a href="#install-and-see-savings-in-60-seconds"><img src="https://img.shields.io/badge/VS_Code-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white" alt="VS Code" height="36"></a>&nbsp;&nbsp;
-  <a href="#install-and-see-savings-in-60-seconds"><img src="https://img.shields.io/badge/Cursor-000000?style=for-the-badge&logo=cursor&logoColor=white" alt="Cursor" height="36"></a>&nbsp;&nbsp;
-  <a href="#install-and-see-savings-in-60-seconds"><img src="https://img.shields.io/badge/Gemini_CLI-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Gemini CLI" height="36"></a>&nbsp;&nbsp;
-  <a href="#install-and-see-savings-in-60-seconds"><img src="https://img.shields.io/badge/Codex_CLI-412991?style=for-the-badge&logo=openai&logoColor=white" alt="Codex CLI" height="36"></a>&nbsp;&nbsp;
-  <a href="#install-and-see-savings-in-60-seconds"><img src="https://img.shields.io/badge/OpenCode-22C55E?style=for-the-badge&logo=terminal&logoColor=white" alt="OpenCode" height="36"></a>
-</p>
+<br>
 
 <p align="center">
-  One command. Index your codebase. Your AI coding agent searches instead of reading entire files.<br>
-  Zero-cloud, zero-config. <code>cce init</code> auto-detects your editor.
-</p>
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/elara-labs/code-context-engine/main/docs/demo.gif" alt="CCE Demo" width="800">
+  <img src="https://raw.githubusercontent.com/elara-labs/code-context-engine/main/docs/demo.gif" alt="CCE Demo" width="720">
 </p>
 
 ---
@@ -86,19 +87,19 @@ Multiple editors in the same project? All get configured in one command.
 
   ⛁ ⛁ ⛁ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶ ⛶  94% tokens saved
 
-  Without CCE   48.0k  tokens   $0.24
-  With CCE       3.4k  tokens   $0.02
+  Without CCE   48.0k  tokens   $0.14
+  With CCE       3.4k  tokens   $0.01
   ──────────────────────────────────────────
-  Saved         44.6k  tokens   $0.22
+  Saved         44.6k  tokens   $0.13
 
-  Cost estimate based on Opus input pricing ($5/1M tokens)
+  Cost estimate based on Sonnet input pricing ($3/1M tokens)
 ```
 
 ---
 
 ## Why this matters
 
-Input tokens are 85-95% of your Claude Code bill. CCE cuts them by 94% ([benchmarked on FastAPI](#benchmark-fastapi-independently-verified)).
+Input tokens are 85-95% of your Claude Code bill. CCE cuts them by 94% ([benchmarked on FastAPI](#benchmark-fastapi-reproducible)).
 
 ```
 Without CCE:    Claude reads payments.py + shipping.py   = 45,000 tokens
@@ -110,11 +111,11 @@ With CCE:       context_search "payment flow"            =    800 tokens
 | Session startup | Re-reads files every time | Queries the index |
 | Finding a function | Read entire 800-line file | Get the 40-line function |
 | Cross-session memory | None | Decisions + code areas persisted |
-| Token cost (Opus, medium project) | ~$0.48/session | ~$0.14/session |
+| Token cost (Sonnet, medium project) | ~$0.14/session | ~$0.04/session |
 
 ---
 
-## Benchmark: FastAPI (independently verified)
+## Benchmark: FastAPI (reproducible)
 
 We benchmarked CCE against [FastAPI](https://github.com/fastapi/fastapi) (53 source files, 180K tokens) with 20 real coding questions. No cherry-picking, no synthetic queries.
 
@@ -122,9 +123,8 @@ We benchmarked CCE against [FastAPI](https://github.com/fastapi/fastapi) (53 sou
 
 | Metric | Result |
 |--------|--------|
-| **Retrieval** | **94%** savings (83,681 → 4,927 tokens/query) |
-| **+ Compression** | **89%** additional (4,927 → 523 tokens/query) |
-| **Combined** | **99.4%** (83,681 → 523 tokens/query) |
+| **Retrieval savings** | **94%** (83,681 → 4,927 tokens/query) |
+| Compression (additional, on retrieved chunks) | 89% (4,927 → 523 tokens/query) |
 | Recall@10 (found the right files) | 0.90 |
 | Latency p50 | 0.4ms |
 | Queries tested | 20 |
@@ -135,8 +135,9 @@ We benchmarked CCE against [FastAPI](https://github.com/fastapi/fastapi) (53 sou
 |-------|-------------|---------|--------|
 | **Retrieval** | Full files → relevant code chunks | 94% | measured |
 | **Chunk Compression** | Raw chunks → signatures + docstrings | 89% | measured |
-| **Output Compression** | Reduces Claude's reply length | 65% | estimated |
 | **Grammar** | Drops articles/fillers from memory text | 13% | measured |
+
+Output compression (reducing Claude's reply length) provides additional savings (~65% estimated) but is not included in the headline number above.
 
 **Reproduce it yourself:**
 
@@ -207,7 +208,7 @@ Re-indexing after edits takes under 1 second (96% embedding cache hit rate). Git
 
 Output compression tools (like Caveman) save 20-75% on output tokens. Output is 5-15% of your bill. Net savings: ~11%.
 
-CCE saves on **input** tokens (94% retrieval + 89% compression on FastAPI, [independently benchmarked](#benchmark-fastapi-independently-verified)). Input is 85-95% of your bill.
+CCE saves on **input** tokens (94% retrieval savings on FastAPI, [reproducibly benchmarked](#benchmark-fastapi-reproducible)). Input is 85-95% of your bill.
 
 ### It actually understands your code
 
@@ -300,7 +301,7 @@ retrieval:
   confidence_threshold: 0.5
 
 pricing:
-  model: opus              # opus | sonnet | haiku
+  model: sonnet            # sonnet | opus | haiku
 ```
 
 ---
@@ -365,22 +366,11 @@ No GPU required. Embedding model runs on CPU via ONNX Runtime.
 
 ## Roadmap
 
-- [x] Semantic indexing + hybrid retrieval + graph expansion
-- [x] Cross-session memory (decisions, code areas, session recall)
-- [x] Web dashboard with live charts
-- [x] Token savings tracking with dollar estimates
-- [x] Output compression (off / lite / standard / max)
-- [x] Content-hash embedding cache (96% hit rate on re-index)
-- [x] sqlite-vec migration (99% smaller install)
-- [x] Dynamic pricing from Anthropic docs
-- [x] 7-layer security (secrets, PII, path traversal, audit log)
-- [x] Clean uninstall (removes all CCE artifacts)
-- [x] AST-aware chunking for PHP, Go, Rust, Java (tree-sitter)
-- [x] Multi-editor support (Cursor, VS Code/Copilot, Gemini CLI)
-- [x] Reproducible benchmark suite (94% savings on FastAPI, per-layer breakdown)
-- [x] Session savings visibility (shown at every session start)
+- [ ] Multi-repo benchmarks (Django, Express, a Go project)
 - [ ] Tree-sitter support for C, C++, Ruby, Swift, Kotlin
 - [ ] Docker support for remote mode
+
+See [CHANGELOG.md](CHANGELOG.md) for shipped features.
 
 ---
 
