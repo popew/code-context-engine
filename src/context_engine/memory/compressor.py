@@ -21,7 +21,6 @@ from context_engine.memory import db as memory_db
 from context_engine.memory.decision_extractor import extract_decisions
 from context_engine.memory.extractive import extractive_summary, truncation_summary
 from context_engine.memory.grammar import (
-    compress as _grammar_compress,
     compress_with_counts as _grammar_compress_counted,
     DEFAULT_LEVEL as _GRAMMAR_LEVEL,
 )
@@ -61,7 +60,6 @@ def compress_turn(
     after expand() on the read side).
     """
     text = _build_turn_text(conn, session_id=session_id, prompt_number=prompt_number)
-    _auto_capture_decisions(conn, text, session_id=session_id, embedder=embedder)
     raw_tokens = _approx_tokens(text)
     summary, tier = _summarise(text, embedder=embedder, top_k=_DEFAULT_TURN_TOP_K)
     extractive_tokens = _approx_tokens(summary)
@@ -76,6 +74,10 @@ def compress_turn(
         memory_db.record_savings(
             conn, bucket="grammar", baseline=gram_raw, served=gram_comp,
         )
+        # Scan the clean, PII-free, grammar-compressed summary for decisions.
+        # Running here reuses the pipeline's existing scrub + compress rather
+        # than duplicating that work on the raw turn text.
+        _auto_capture_decisions(conn, summary, session_id=session_id, prompt_number=prompt_number, embedder=embedder)
     # Turn-summarization savings: raw turn text (prompt + tool inputs/outputs)
     # vs the extractive summary that ends up in turn_summaries.
     if raw_tokens > 0 and extractive_tokens > 0:
@@ -228,25 +230,40 @@ def _summarise(text: str, *, embedder, top_k: int) -> tuple[str, str]:
 
 def _auto_capture_decisions(
     conn: sqlite3.Connection,
-    text: str,
+    summary: str,
     *,
     session_id: str,
+    prompt_number: int,
     embedder,
 ) -> int:
-    """Extract decision patterns from turn text and insert with source='auto'.
+    """Extract decision patterns from the turn summary and insert with source='auto'.
 
-    Returns the number of decisions inserted. Skips duplicates silently —
-    the decisions table has no UNIQUE constraint on (decision, session_id)
-    so we guard against re-processing the same turn by checking existing rows.
+    Receives the post-extractive, PII-scrubbed, grammar-compressed summary so
+    no duplicate processing is needed. Guards against retry-duplication by
+    pre-loading existing auto decisions for this session before inserting.
+
+    Returns the number of decisions inserted.
     """
-    decisions = extract_decisions(text)
+    decisions = extract_decisions(summary)
     if not decisions:
         return 0
+
+    # Dedup: load existing auto decisions for this session to handle retries
+    existing = {
+        row[0].lower()
+        for row in conn.execute(
+            "SELECT decision FROM decisions WHERE session_id = ? AND source = 'auto'",
+            (session_id,),
+        )
+    }
 
     epoch = int(time.time())
     ts = time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime(epoch))
     count = 0
     for decision, reason in decisions:
+        if decision.lower() in existing:
+            continue
+
         try:
             cur = conn.execute(
                 "INSERT INTO decisions "
@@ -254,17 +271,25 @@ def _auto_capture_decisions(
                 "VALUES (?, ?, ?, 'auto', ?, ?)",
                 (session_id, decision, reason, epoch, ts),
             )
-            memory_db.record_decision_vec(
-                conn, embedder,
-                decision_id=cur.lastrowid,
-                decision=decision,
-                reason=reason,
-            )
+            existing.add(decision.lower())
             count += 1
         except Exception:
-            log.debug("auto-capture decision insert failed: %s", decision)
+            log.warning("auto-capture insert failed for session %s: %s", session_id, decision)
+            continue
+
+        if embedder is not None:
+            try:
+                memory_db.record_decision_vec(
+                    conn, embedder,
+                    decision_id=cur.lastrowid,
+                    decision=decision,
+                    reason=reason,
+                )
+            except Exception:
+                log.warning("record_decision_vec failed for decision_id %s", cur.lastrowid)
+
     if count:
-        log.debug("auto-captured %d decision(s) for session %s", count, session_id)
+        log.debug("auto-captured %d decision(s) for session %s turn %s", count, session_id, prompt_number)
     return count
 
 

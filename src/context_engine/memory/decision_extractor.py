@@ -14,7 +14,11 @@ import re
 _SENT_SPLIT = re.compile(r'(?<=[.!?\n])\s+')
 _MIN_SENT_LEN = 20
 
-_REASON_CLAUSE = r'(?:because(?:\s+of)?|since|as\b|so\s+that|given\s+that)'
+# 'as\b' excluded — too noisy ("use chi as the router" is not a decision)
+_REASON_CLAUSE = r'(?:because(?:\s+of)?|since|so\s+that|given\s+that)'
+
+# Fast pre-check keywords — skip pattern loop if none present in sentence
+_REASON_KEYWORDS = frozenset(["because", "since", "so that", "given that"])
 
 _PATTERNS: list[re.Pattern[str]] = [
     # "chose/choose/choosing/chosen X over Y because Z"
@@ -66,6 +70,10 @@ def extract_decisions(text: str) -> list[tuple[str, str]]:
     seen: set[str] = set()
 
     for sentence in _split_sentences(text):
+        # Fast pre-check: skip pattern loop if no reason keyword present
+        lower = sentence.lower()
+        if not any(kw in lower for kw in _REASON_KEYWORDS):
+            continue
         for pattern in _PATTERNS:
             m = pattern.search(sentence)
             if m:
