@@ -377,7 +377,7 @@ No GPU required. Embedding model runs on CPU via ONNX Runtime.
 
 ## Supported Languages
 
-**AST-aware chunking (10 extensions):**
+**AST-aware chunking (tree-sitter parsed, 10 extensions):**
 
 | Language | Extensions |
 |----------|-----------|
@@ -389,7 +389,20 @@ No GPU required. Embedding model runs on CPU via ONNX Runtime.
 | Rust | `.rs` |
 | Java | `.java` |
 
-**Fallback chunking:** All other text files (Markdown, YAML, config, etc.) chunked by line range.
+**Language-aware fallback chunking (40+ extensions):**
+
+| Category | Languages |
+|----------|-----------|
+| Web | HTML, CSS, SCSS, LESS, Vue, Svelte |
+| Systems | C, C++, C#, Zig, Nim |
+| Mobile | Swift, Kotlin, Dart |
+| Functional | Haskell, Scala, Clojure, Elixir, Erlang, F# |
+| Scripting | Ruby, Perl, Lua, R, Bash/Zsh |
+| Data/Config | JSON, YAML, TOML, XML, SQL, GraphQL, Protobuf |
+| DevOps | Terraform, HCL, Dockerfile |
+| Docs | Markdown |
+
+All other text files are chunked by line range. Binary files are skipped.
 
 ---
 
