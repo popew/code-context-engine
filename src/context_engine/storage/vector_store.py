@@ -112,10 +112,11 @@ class VectorStore:
                 self._conn.execute("DROP TABLE IF EXISTS chunks_vec")
                 self._conn.execute("DELETE FROM chunks")
                 self._conn.execute("DELETE FROM chunk_compressions")
+            # Safe: dim is a validated integer, never from user input.  noqa: S608
             self._conn.execute(f"""
                 CREATE VIRTUAL TABLE IF NOT EXISTS chunks_vec
                 USING vec0(embedding float[{dim}])
-            """)
+            """)  # noqa: S608
             self._dim = dim
             self._conn.commit()
 
@@ -242,21 +243,22 @@ class VectorStore:
         from context_engine.utils import batched_params
 
         with self._lock:
+            # Safe: placeholders is only "?" chars; values are parameterized.  noqa: S608
             for batch in batched_params(file_paths):
                 placeholders = ",".join("?" * len(batch))
                 if self._dim is not None:
                     self._conn.execute(
-                        f"DELETE FROM chunks_vec "
+                        f"DELETE FROM chunks_vec "  # noqa: S608
                         f"WHERE rowid IN (SELECT rowid FROM chunks WHERE file_path IN ({placeholders}))",
                         batch,
                     )
                 self._conn.execute(
-                    f"DELETE FROM chunk_compressions "
+                    f"DELETE FROM chunk_compressions "  # noqa: S608
                     f"WHERE chunk_id IN (SELECT id FROM chunks WHERE file_path IN ({placeholders}))",
                     batch,
                 )
                 self._conn.execute(
-                    f"DELETE FROM chunks WHERE file_path IN ({placeholders})",
+                    f"DELETE FROM chunks WHERE file_path IN ({placeholders})",  # noqa: S608
                     batch,
                 )
             self._conn.commit()

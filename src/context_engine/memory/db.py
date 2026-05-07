@@ -403,10 +403,11 @@ def _write_vec_row(conn, table: str, rowid: int, vec) -> None:
     doesn't break inserts on the source table — the failed row simply won't
     be semantically searchable until the vec tables are rebuilt.
     """
+    # Safe: table name is an internal constant, never from user input.  noqa: S608
     try:
-        conn.execute(f"DELETE FROM {table} WHERE rowid = ?", (rowid,))
+        conn.execute(f"DELETE FROM {table} WHERE rowid = ?", (rowid,))  # noqa: S608
         conn.execute(
-            f"INSERT INTO {table}(rowid, embedding) VALUES (?, ?)",
+            f"INSERT INTO {table}(rowid, embedding) VALUES (?, ?)",  # noqa: S608
             (rowid, _serialize_vec(vec)),
         )
     except sqlite3.OperationalError as exc:
@@ -786,10 +787,11 @@ def prune_old_rows(
 
     archived: dict[str, list[dict]] = {}
 
+    # Safe: table and col_list are internal constants, never from user input.  noqa: S608
     def _harvest_and_delete(table: str, columns: list[str], cutoff: int) -> int:
         col_list = ", ".join(columns)
         rows = conn.execute(
-            f"SELECT {col_list} FROM {table} WHERE created_at_epoch < ?",
+            f"SELECT {col_list} FROM {table} WHERE created_at_epoch < ?",  # noqa: S608
             (cutoff,),
         ).fetchall()
         if not rows:
@@ -797,7 +799,7 @@ def prune_old_rows(
         if archive:
             archived[table] = [dict(r) for r in rows]
         conn.execute(
-            f"DELETE FROM {table} WHERE created_at_epoch < ?",
+            f"DELETE FROM {table} WHERE created_at_epoch < ?",  # noqa: S608
             (cutoff,),
         )
         return len(rows)

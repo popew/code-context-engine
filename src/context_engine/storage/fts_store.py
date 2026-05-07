@@ -84,8 +84,9 @@ class FTSStore:
         with self._lock:
             for batch in batched_params(file_paths):
                 placeholders = ",".join("?" * len(batch))
+                # Safe: placeholders is only "?" chars; values are parameterized.  noqa: S608
                 self._conn.execute(
-                    f"DELETE FROM chunks_fts WHERE file_path IN ({placeholders})",
+                    f"DELETE FROM chunks_fts WHERE file_path IN ({placeholders})",  # noqa: S608
                     batch,
                 )
             self._conn.commit()
