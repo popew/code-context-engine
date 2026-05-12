@@ -171,25 +171,58 @@ class OllamaBackend:
             )
         self.dimension = len(probe[0])
 
+    # Bounded ceiling for /api/pull, which can take several minutes for a
+    # multi-hundred-MB model on slow networks but must never wait
+    # indefinitely. ~10 minutes is enough for nomic-embed-text on a
+    # typical home connection; users on slower links can override via
+    # CCE_OLLAMA_PULL_TIMEOUT (env-only — not a config knob because the
+    # value matters only on first-time use).
+    _PULL_TIMEOUT_SECONDS = 600.0
+
     def _ensure_model(self) -> None:
-        """If the model isn't pulled yet, pull it (one-time cost)."""
+        """If the model isn't pulled yet, pull it (one-time cost).
+
+        Distinguishes three failure modes:
+          * Ollama not reachable (network/connect error) → RuntimeError
+          * Ollama reachable but /api/tags returns non-200 → RuntimeError
+            (surface the status code instead of mis-reporting as
+            "not reachable")
+          * /api/pull hangs → bounded by _PULL_TIMEOUT_SECONDS
+        """
         import httpx
         try:
-            tags = httpx.get(f"{self.base_url}/api/tags", timeout=self._timeout).json()
-        except Exception as exc:
+            tags_resp = httpx.get(f"{self.base_url}/api/tags", timeout=self._timeout)
+        except httpx.HTTPError as exc:
             raise RuntimeError(
                 f"Ollama not reachable at {self.base_url}: {exc}"
+            ) from exc
+        try:
+            tags_resp.raise_for_status()
+        except httpx.HTTPStatusError as exc:
+            raise RuntimeError(
+                f"Ollama at {self.base_url} returned HTTP "
+                f"{tags_resp.status_code} for /api/tags: {exc}"
+            ) from exc
+        try:
+            tags = tags_resp.json()
+        except ValueError as exc:
+            raise RuntimeError(
+                f"Ollama at {self.base_url} returned non-JSON /api/tags "
+                f"response: {exc}"
             ) from exc
         installed = {m["name"].split(":")[0] for m in tags.get("models", [])}
         if self.model_name.split(":")[0] in installed:
             return
         log.info("Pulling Ollama embedding model %s (first run only)...", self.model_name)
+        pull_timeout = float(
+            os.environ.get("CCE_OLLAMA_PULL_TIMEOUT") or self._PULL_TIMEOUT_SECONDS
+        )
         # /api/pull streams NDJSON progress; we just need the final 200.
         with httpx.stream(
             "POST",
             f"{self.base_url}/api/pull",
             json={"name": self.model_name, "stream": False},
-            timeout=None,
+            timeout=pull_timeout,
         ) as resp:
             resp.raise_for_status()
             for _ in resp.iter_lines():
@@ -226,6 +259,9 @@ class OllamaBackend:
         return result[0]
 
 
+_VALID_BACKENDS = {"fastembed", "ollama"}
+
+
 def select_backend(
     *,
     model_name: str | None = None,
@@ -237,10 +273,20 @@ def select_backend(
 
     Order: fastembed (if installed) → Ollama (if reachable). Override via
     ``prefer`` ("fastembed" | "ollama") or env var ``CCE_EMBED_BACKEND``.
+    Unrecognised values raise immediately rather than silently auto-
+    detecting — a typo in ``CCE_EMBED_BACKEND=falstembed`` is otherwise
+    indistinguishable from "the var didn't apply".
+
     Raises RuntimeError with a clear two-option remediation when neither
     is available.
     """
     forced = (prefer or os.environ.get("CCE_EMBED_BACKEND") or "").strip().lower()
+    if forced and forced not in _VALID_BACKENDS:
+        raise RuntimeError(
+            f"Unknown embedding backend '{forced}'. Expected one of: "
+            f"{sorted(_VALID_BACKENDS)}. Unset CCE_EMBED_BACKEND or pass "
+            f"prefer=None to use auto-detect."
+        )
 
     if forced == "fastembed":
         return FastembedBackend(model_name or _DEFAULT_MODEL)
@@ -294,6 +340,27 @@ class Embedder:
     @property
     def dimension(self) -> int:
         return self._backend.dimension
+
+    @property
+    def cache_salt(self) -> str:
+        """Stable key encoding the active backend identity + model.
+
+        Used by callers that build an :class:`EmbeddingCache` *after*
+        resolving the backend. Salting cache content hashes with this
+        string means switching backends (fastembed↔Ollama) or changing
+        the Ollama embedding model invalidates the cache automatically,
+        preventing stale-dim/wrong-semantics reuse.
+        """
+        return f"{self._backend.name}:{self._backend.model_name}"
+
+    def attach_cache(self, cache: EmbeddingCache) -> None:
+        """Attach an EmbeddingCache after construction.
+
+        Lets callers create the cache with the resolved backend's
+        identity (via :attr:`cache_salt`) without instantiating the
+        Embedder twice.
+        """
+        self._cache = cache
 
     def embed(
         self,

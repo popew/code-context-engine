@@ -395,26 +395,38 @@ async def _run_indexing_locked(
 
     def _ensure_embedder() -> tuple[Embedder, EmbeddingCache]:
         nonlocal embedder, cache
+        # Construct the embedder FIRST so we know which backend was
+        # actually selected. The EmbeddingCache then gets salted with the
+        # backend's identity (name + model) rather than the user-config
+        # embedding_model — without this, a fastembed↔Ollama swap (or a
+        # change to config.ollama_embed_model) would silently reuse
+        # vectors at the wrong dimension/semantics.
+        if embedder is None:
+            from context_engine.config import resolve_ollama_url
+            embedder = Embedder(
+                model_name=config.embedding_model,
+                ollama_model=getattr(config, "ollama_embed_model", "nomic-embed-text"),
+                ollama_url=resolve_ollama_url(config),
+            )
         if cache is None:
             cache = EmbeddingCache(
                 storage_base / "embedding_cache.db",
-                model_name=config.embedding_model,
+                model_name=embedder.cache_salt,
             )
-        if embedder is None:
-            embedder = Embedder(
-                model_name=config.embedding_model,
-                cache=cache,
-                ollama_model=getattr(config, "ollama_embed_model", "nomic-embed-text"),
-                ollama_url=getattr(config, "ollama_url", "http://localhost:11434"),
-            )
+            embedder.attach_cache(cache)
         return embedder, cache
 
     # Dimension migration: if a previous run recorded a different embedding
     # dimension, every file's stored content-hash → vector mapping is now
     # stale. Force a full reindex once so the vector store (which auto-drops
-    # on dim mismatch) gets repopulated. Only triggered when both: prior
-    # dim was recorded AND files exist to (re)index.
-    if file_iter and manifest.embedding_dim is not None:
+    # on dim mismatch) gets repopulated. Only triggered when ALL of:
+    #   - files exist to (re)index
+    #   - prior dim was recorded
+    #   - the manifest already tracks files (i.e. NOT a virgin run)
+    # The third guard matters because on a clean manifest the eager
+    # embedder load is pure waste — there's nothing to compare against
+    # and we'd hard-fail if neither backend is available yet.
+    if file_iter and manifest.embedding_dim is not None and manifest._entries:
         _emb, _ = _ensure_embedder()
         if manifest.embedding_dim != _emb.dimension:
             if log_fn:

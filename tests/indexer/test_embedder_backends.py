@@ -100,6 +100,20 @@ def test_env_var_forces_backend(monkeypatch):
     ctor.assert_called_once()
 
 
+def test_unknown_backend_value_raises(monkeypatch):
+    """A typo in CCE_EMBED_BACKEND used to silently auto-detect — now it
+    raises so misconfiguration is visible (Copilot review on #68)."""
+    monkeypatch.setenv("CCE_EMBED_BACKEND", "falstembed")
+    with pytest.raises(RuntimeError, match="Unknown embedding backend"):
+        select_backend()
+
+
+def test_unknown_backend_via_prefer_raises(monkeypatch):
+    monkeypatch.delenv("CCE_EMBED_BACKEND", raising=False)
+    with pytest.raises(RuntimeError, match="Unknown embedding backend"):
+        select_backend(prefer="nonsense")
+
+
 # ── OllamaBackend HTTP plumbing ─────────────────────────────────────────
 
 
@@ -216,6 +230,105 @@ def test_ollama_backend_embed_query(monkeypatch):
     assert vec == [0.1, 0.2, 0.3]
 
 
+def test_ollama_backend_surfaces_http_error_on_tags(monkeypatch):
+    """A reachable-but-erroring Ollama (e.g. 500) used to be misreported
+    as 'not reachable'. Now the status code is surfaced (Copilot review)."""
+    import httpx
+
+    class _ErrResp:
+        status_code = 500
+
+        def raise_for_status(self):
+            raise httpx.HTTPStatusError(
+                "server error",
+                request=httpx.Request("GET", "http://x"),
+                response=httpx.Response(500),
+            )
+
+        def json(self):
+            return {}
+
+    monkeypatch.setattr("httpx.get", lambda url, timeout=None: _ErrResp())
+    with pytest.raises(RuntimeError, match="HTTP 500"):
+        OllamaBackend(model_name="nomic-embed-text")
+
+
+def test_ollama_backend_pull_has_bounded_timeout(monkeypatch):
+    """/api/pull must never use timeout=None — that's exactly the hang
+    risk the reviewer flagged (Copilot review)."""
+    captured: dict[str, object] = {}
+
+    def fake_get(url, timeout=None):
+        return _MockResp({"models": []})
+
+    def fake_post(url, json=None, timeout=None):
+        if url.endswith("/api/embed"):
+            return _MockResp({"embeddings": [[0.0] * 4]})
+        raise AssertionError(url)
+
+    class _StreamCtx:
+        def __init__(self, *a, **kw):
+            captured.update(kw)
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+        def iter_lines(self):
+            return iter([])
+
+        def raise_for_status(self):
+            pass
+
+    monkeypatch.setattr("httpx.get", fake_get)
+    monkeypatch.setattr("httpx.post", fake_post)
+    monkeypatch.setattr("httpx.stream", lambda *a, **kw: _StreamCtx(*a, **kw))
+
+    OllamaBackend(model_name="nomic-embed-text")
+    timeout = captured.get("timeout")
+    assert timeout is not None, "pull must use a bounded timeout"
+    assert isinstance(timeout, (int, float))
+    assert 0 < float(timeout) <= 3600, (
+        f"pull timeout looks unreasonable: {timeout!r}"
+    )
+
+
+def test_ollama_backend_pull_timeout_env_override(monkeypatch):
+    monkeypatch.setenv("CCE_OLLAMA_PULL_TIMEOUT", "30")
+    captured: dict[str, object] = {}
+
+    def fake_get(url, timeout=None):
+        return _MockResp({"models": []})
+
+    def fake_post(url, json=None, timeout=None):
+        return _MockResp({"embeddings": [[0.0] * 4]})
+
+    class _StreamCtx:
+        def __init__(self, *a, **kw):
+            captured.update(kw)
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+        def iter_lines(self):
+            return iter([])
+
+        def raise_for_status(self):
+            pass
+
+    monkeypatch.setattr("httpx.get", fake_get)
+    monkeypatch.setattr("httpx.post", fake_post)
+    monkeypatch.setattr("httpx.stream", lambda *a, **kw: _StreamCtx(*a, **kw))
+
+    OllamaBackend(model_name="nomic-embed-text")
+    assert float(captured["timeout"]) == 30.0
+
+
 # ── Embedder integration ────────────────────────────────────────────────
 
 
@@ -257,6 +370,37 @@ def test_embedder_delegates_to_supplied_backend():
 def test_embedder_query_uses_backend():
     emb = Embedder(backend=_StubBackend())
     assert list(emb.embed_query("q")) == [0.5, 0.5, 0.5, 0.5]
+
+
+def test_cache_salt_encodes_backend_identity():
+    """Cache salt must include both backend name AND model so a
+    fastembed↔Ollama swap invalidates cached vectors (Copilot review)."""
+    emb = Embedder(backend=_StubBackend())
+    salt = emb.cache_salt
+    assert "stub" in salt
+    assert "stub-model" in salt
+
+
+def test_attach_cache_late_binding(tmp_path):
+    """The pipeline creates the embedder first (so it can read cache_salt),
+    then constructs the cache, then attaches it back."""
+    from context_engine.indexer.embedding_cache import EmbeddingCache
+    from context_engine.models import Chunk, ChunkType
+
+    emb = Embedder(backend=_StubBackend())
+    cache = EmbeddingCache(tmp_path / "c.db", model_name=emb.cache_salt)
+    emb.attach_cache(cache)
+
+    chunk = Chunk(
+        id="c1", content="hello", chunk_type=ChunkType.FUNCTION,
+        file_path="x.py", start_line=1, end_line=1, language="python",
+    )
+    emb.embed([chunk])
+    # Subsequent embed on the same content must come from cache,
+    # not the backend (StubBackend always returns float(i) so a cache
+    # miss would still match — verify by checking the cache has the entry).
+    h = cache.content_hash("hello")
+    assert h in cache.get_batch([h])
 
 
 # ── Manifest dimension migration ────────────────────────────────────────

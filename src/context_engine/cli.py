@@ -542,18 +542,16 @@ def _preflight_check(config) -> None:
     """
     # --- Embedding backend ---
     click.echo(_dim("  Detecting embedding backend") + "...", nl=False)
+    from context_engine.config import resolve_ollama_url
+    ollama_model = getattr(config, "ollama_embed_model", "nomic-embed-text")
+    ollama_url = resolve_ollama_url(config)
     try:
-        from context_engine.indexer.embedder import (
-            _fastembed_available,
-            _ollama_available,
-            select_backend,
-        )
-        ollama_model = getattr(config, "ollama_embed_model", "nomic-embed-text")
-        ollama_url = getattr(config, "ollama_url", "http://localhost:11434")
-        if _fastembed_available():
-            click.echo(_dim(" loading fastembed model (first run downloads ~60 MB)") + "...", nl=False)
-        elif _ollama_available(ollama_url):
-            click.echo(_dim(f" using Ollama at {ollama_url} ({ollama_model})") + "...", nl=False)
+        from context_engine.indexer.embedder import select_backend
+        # Don't echo a tentative "loading fastembed…" or "using Ollama…"
+        # banner before select_backend() picks. CCE_EMBED_BACKEND can
+        # force a different choice than the probe order suggests, and
+        # printing both messages produced contradictory output. Wait for
+        # the actual selection, then echo once with the truth.
         backend = select_backend(
             model_name=getattr(config, "embedding_model", "BAAI/bge-small-en-v1.5"),
             ollama_model=ollama_model,
@@ -568,8 +566,11 @@ def _preflight_check(config) -> None:
     except Exception as exc:
         click.echo("")
         _warn(f"No embedding backend available: {exc}")
-        _warn("Install fastembed (`pip install code-context-engine[local]`) "
-              "or start Ollama at localhost:11434.")
+        _warn(
+            "Install fastembed (`pip install code-context-engine[local]`) "
+            f"or start an Ollama server at {ollama_url} and pull "
+            f"{ollama_model}."
+        )
 
     # --- Ollama for LLM compression (independent of the embedding path) ---
     try:
