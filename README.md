@@ -467,11 +467,11 @@ set_output_level output_level=max
 | Level | Savings | What it does |
 |-------|---------|--------------|
 | `off` | 0% | No compression |
-| `lite` | ~20% | Removes filler words, hedging, pleasantries |
-| `standard` | ~65% | Drops articles, uses fragments, short synonyms |
-| `max` | ~75% | Caveman style: minimal grammar, maximum density |
+| `lite` | ~25% | Removes filler/hedging/pleasantries + diff-only for code changes |
+| `standard` | ~70% | Drops articles, fragments, short synonyms + diff-only for code |
+| `max` | ~80% | Telegraphic style + diff-only for code |
 
-Default is `standard`. The `max` level produces very terse output (similar to the "caveman mode" style). Code blocks, paths, and commands are never compressed regardless of level.
+Default is `standard`. All levels include **code output rules** that instruct the model to show only changed lines (not full file rewrites), which is where most output tokens go in coding sessions. The `max` level produces very terse prose (similar to "caveman mode"). Code blocks, paths, and commands are never compressed regardless of level.
 
 ### Where do the savings come from?
 
@@ -484,7 +484,7 @@ Most savings are **input tokens** (what goes into the model):
 | Grammar compression | Input | 13% (article/filler removal) |
 | Turn summarization | Input | varies (session history) |
 | Progressive disclosure | Input | varies (tool payloads) |
-| Output compression | Output | 20-75% (depends on level) |
+| Output compression | Output | 25-80% (depends on level) |
 
 Output tokens cost 5x more per token (e.g. Opus: $15/1M input vs $75/1M output), so even a small output reduction has outsized cost impact.
 
