@@ -449,16 +449,18 @@ No. Quality stays the same or slightly improves.
 
 CCE replaces "dump the entire file" with "search for the relevant function." The model still gets the code it needs (0.90 Recall@10 in benchmarks). Less irrelevant context means less noise competing for attention, which can improve the model's focus on your actual question.
 
-### How do I increase output token savings?
+### How does output token savings work?
 
-Set the output compression level in your project config (`cce.yaml`):
+CCE writes output compression rules directly into your agent's instruction files (`CLAUDE.md`, `AGENTS.md`, `.cursorrules`, etc.) during `cce init`. These rules apply to the **entire session**, not just CCE tool responses, so every reply from the agent follows them.
+
+Set the level in `cce.yaml`:
 
 ```yaml
 compression:
   output: max       # off | lite | standard | max
 ```
 
-Or change it at runtime via the MCP tool:
+Then re-run `cce init` to update instruction files. Or change at runtime:
 
 ```
 set_output_level output_level=max
@@ -471,7 +473,7 @@ set_output_level output_level=max
 | `standard` | ~70% | Drops articles, fragments, short synonyms + diff-only for code |
 | `max` | ~80% | Telegraphic style + diff-only for code |
 
-Default is `standard`. All levels include **code output rules** that instruct the model to show only changed lines (not full file rewrites), which is where most output tokens go in coding sessions. The `max` level produces very terse prose (similar to "caveman mode"). Code blocks, paths, and commands are never compressed regardless of level.
+Default is `standard`. All levels include **code output rules** that tell the model to show only changed lines (not full file rewrites), which is where most output tokens go in coding sessions. The `max` level produces very terse prose (similar to "caveman mode"). Code blocks, paths, and commands are never compressed regardless of level.
 
 ### Where do the savings come from?
 
