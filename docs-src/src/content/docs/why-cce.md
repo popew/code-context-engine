@@ -71,9 +71,11 @@ The agent stops re-deriving answers it already figured out. Decisions compound i
 ## The 60-second test
 
 ```bash
-uv tool install code-context-engine
+uv tool install "code-context-engine[local]"
 cd /path/to/your/project
 cce init
 ```
 
 Ask your agent a question. Then run `cce savings` to see exactly how many tokens and dollars CCE saved. If the numbers don't convince you, run `cce uninstall` to remove everything cleanly.
+
+> Already have Ollama running? Use `uv tool install code-context-engine` (without `[local]`) instead.

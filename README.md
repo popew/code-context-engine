@@ -64,15 +64,17 @@
 
 ---
 
-## Quick start (3 lines)
+## Quick start
 
 ```bash
-uv tool install code-context-engine
+uv tool install "code-context-engine[local]"    # or: pipx install "code-context-engine[local]"
 cd /path/to/your/project
-cce init                              # or: cce init --agent all
+cce init                                        # or: cce init --agent all
 ```
 
-That's it. Your AI coding agent now searches your index instead of reading entire files. No config needed.
+That's it. Your AI coding agent now searches your index instead of reading entire files.
+
+> **Already have Ollama?** You can skip `[local]` and use `uv tool install code-context-engine` instead. CCE auto-detects Ollama at localhost:11434 and uses `nomic-embed-text`.
 
 ---
 
@@ -92,16 +94,18 @@ Tested on all three platforms in CI (macOS, Linux, Windows × Python 3.11/3.12/3
 
 ## Install and see savings in 60 seconds
 
+You need an embedding backend to index code. Pick one:
+
+| Option | Install command | Size | Requires |
+|--------|----------------|------|----------|
+| **Local (recommended)** | `uv tool install "code-context-engine[local]"` | +60 MB | Nothing else |
+| **Ollama** | `uv tool install code-context-engine` | Core only | Ollama running + `nomic-embed-text` pulled |
+
+Then:
+
 ```bash
-uv tool install code-context-engine   # or: pipx install code-context-engine
 cd /path/to/your/project
 cce init                              # index, install hooks, register MCP server
-```
-
-**Embedding backends:** CCE auto-detects the best available backend. If you have Ollama running, it uses `nomic-embed-text` with zero extra dependencies. For offline/local embedding without Ollama, install the `[local]` extra:
-
-```bash
-uv tool install "code-context-engine[local]"   # includes fastembed + ONNX Runtime
 ```
 
 Restart your editor. Done. Every question now hits the index instead of re-reading files.

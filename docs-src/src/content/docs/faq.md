@@ -78,6 +78,19 @@ CCE uses Tree-sitter for structural parsing. The following languages have full A
 
 Other file types (YAML, Markdown, config files, etc.) are indexed using line-based chunking. They still appear in search results but without function-level granularity.
 
+## Why does `cce init` fail with "No embedding backend available"?
+
+CCE needs an embedding backend to convert code into searchable vectors. You have two options:
+
+1. **Install with `[local]` extra** (recommended): `uv tool install "code-context-engine[local]"`. This includes fastembed, which works offline with no external services.
+2. **Use Ollama**: Start Ollama and run `ollama pull nomic-embed-text`. Then install CCE without `[local]`: `uv tool install code-context-engine`.
+
+If you installed without `[local]` and don't have Ollama running, re-install with the extra:
+
+```bash
+uv tool install --force "code-context-engine[local]"
+```
+
 ## Can I use CCE with multiple agents at once?
 
 Yes. Run `cce init --agent all` to configure every supported agent. They all share the same index and MCP server, so there is no duplication or conflict.
