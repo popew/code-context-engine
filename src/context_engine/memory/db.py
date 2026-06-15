@@ -309,6 +309,11 @@ def connect(db_path: str | Path) -> sqlite3.Connection:
     # WAL gives concurrent readers (the dashboard) decent isolation while the
     # MCP server writes; no impact on single-process use.
     conn.execute("PRAGMA journal_mode = WAL")
+    # Explicitly set the SQLite busy timeout so concurrent writers (hooks +
+    # auto-prune) wait up to 5s for the write lock before raising
+    # "database is locked". This is the SQLite-level PRAGMA, separate from
+    # Python's sqlite3.connect(timeout=...) parameter.
+    conn.execute("PRAGMA busy_timeout = 5000")
     has_vec = _try_load_vec(conn)
     _ensure_schema(conn, has_vec=has_vec)
     return conn
