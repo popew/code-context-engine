@@ -8,7 +8,6 @@ coexistence, legacy migration, and Windows-path TOML escaping.
 from __future__ import annotations
 
 import json
-import sys
 import tomllib
 from unittest.mock import patch
 
@@ -75,7 +74,6 @@ def test_slug_differs_for_same_basename_in_different_paths(tmp_path):
     assert _project_slug(a) != _project_slug(b)
 
 
-@pytest.mark.skipif(sys.platform.startswith("win"), reason="symlink requires Developer Mode or admin on Windows")
 def test_slug_resolves_symlinks(tmp_path):
     """Two paths pointing at the same on-disk directory (one via symlink)
     should produce the same slug — so re-running cce init via a symlinked
@@ -83,7 +81,13 @@ def test_slug_resolves_symlinks(tmp_path):
     real = tmp_path / "real"
     real.mkdir()
     link = tmp_path / "link"
-    link.symlink_to(real)
+    try:
+        link.symlink_to(real)
+    except OSError:
+        pytest.fail(
+            "symlink_to failed — enable Windows Developer Mode or run as admin "
+            "to test symlink resolution"
+        )
     assert _project_slug(real) == _project_slug(link)
 
 
