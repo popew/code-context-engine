@@ -427,7 +427,7 @@ def test_configure_rewrites_section_when_command_drifts(fake_home, project_dir):
     user_config.write_text(
         f"[mcp_servers.cce-{slug}]\n"
         'command = "/old/path/to/cce"\n'
-        f'args = ["serve", "--project-dir", "{project_dir}"]\n'
+        f'args = {json.dumps(["serve", "--project-dir", str(project_dir)])}\n'
     )
     with patch("context_engine.editors.resolve_cce_binary", return_value="/new/path/to/cce"):
         changed = configure_mcp(project_dir, "codex")
