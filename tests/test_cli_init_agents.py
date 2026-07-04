@@ -227,6 +227,46 @@ def test_init_copilot_writes_vscode_config_and_copilot_instructions(tmp_path, mo
     assert not (project / "AGENTS.md").exists()
 
 
+def test_init_all_then_uninstall_shared_mcp_json(tmp_path, monkeypatch):
+    """`--agent all` writes claude+pi to shared .mcp.json; uninstall
+    must not error when the second editor's remove_mcp finds the file
+    already deleted by the first."""
+    from context_engine.config import Config
+
+    fake_home = tmp_path / "home"
+    fake_home.mkdir()
+    project = tmp_path / "project"
+    project.mkdir()
+    monkeypatch.setattr(Path, "home", classmethod(lambda cls: fake_home))
+    monkeypatch.setattr("context_engine.cli._preflight_check", lambda config: None)
+    monkeypatch.setattr("context_engine.cli._run_index", _noop_index)
+    monkeypatch.setattr("context_engine.cli._check_memory_capture_reachable", lambda config, project: None)
+    monkeypatch.setattr("context_engine.cli._ensure_session_hook", lambda project: None)
+    monkeypatch.setattr("context_engine.cli._install_memory_hooks", lambda project: None)
+    monkeypatch.chdir(project)
+
+    runner = CliRunner()
+    with patch("context_engine.editors.resolve_cce_binary", return_value="/usr/bin/cce"), patch(
+        "context_engine.utils.resolve_cce_binary", return_value="/usr/bin/cce"
+    ):
+        result = runner.invoke(main, ["init", "--agent", "all"], catch_exceptions=False, obj={})
+
+    assert result.exit_code == 0
+    assert (project / ".mcp.json").exists()
+    assert "context-engine" in json.loads((project / ".mcp.json").read_text()).get("mcpServers", {})
+
+    # Uninstall — claude removes .mcp.json, pi's remove_mcp finds it
+    # already gone and must silently no-op instead of raising.
+    config = Config(storage_path=str(tmp_path / "storage"))
+    with patch("context_engine.cli.load_config", return_value=config), patch(
+        "context_engine.editors.resolve_cce_binary", return_value="/usr/bin/cce"
+    ):
+        result = runner.invoke(main, ["uninstall", "--yes"], catch_exceptions=False, obj={})
+
+    assert result.exit_code == 0, f"uninstall failed:\n{result.output}"
+    assert not (project / ".mcp.json").exists()
+
+
 def test_init_all_writes_every_editor_config_and_instruction_file(tmp_path, monkeypatch):
     fake_home = tmp_path / "home"
     fake_home.mkdir()
