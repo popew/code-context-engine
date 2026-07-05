@@ -50,6 +50,13 @@
   <img src="https://raw.githubusercontent.com/elara-labs/code-context-engine/main/docs/demo.gif" alt="CCE Demo" width="720">
 </p>
 
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=dRmWYHuIJxM">
+    <img src="https://img.youtube.com/vi/dRmWYHuIJxM/maxresdefault.jpg" alt="Talk: We Cut 94% of Our AI Coding Tokens — AI Engineer World's Fair 2026" width="560">
+  </a><br>
+  <sub><strong>Talk:</strong> <a href="https://www.youtube.com/watch?v=dRmWYHuIJxM">We Cut 94% of Our AI Coding Tokens</a> — AI Engineer World's Fair 2026</sub>
+</p>
+
 ---
 
 ## Use cases
@@ -399,7 +406,7 @@ No GPU required. With Ollama, embeddings are handled by the Ollama server. With 
 
 ## Supported Languages
 
-**AST-aware chunking (tree-sitter parsed, 10 extensions):**
+**AST-aware chunking (tree-sitter parsed, 11 extensions):**
 
 | Language | Extensions |
 |----------|-----------|
@@ -410,13 +417,14 @@ No GPU required. With Ollama, embeddings are handled by the Ollama server. With 
 | Go | `.go` |
 | Rust | `.rs` |
 | Java | `.java` |
+| C# | `.cs` |
 
 **Language-aware fallback chunking (40+ extensions):**
 
 | Category | Languages |
 |----------|-----------|
 | Web | HTML, CSS, SCSS, LESS, Vue, Svelte |
-| Systems | C, C++, C#, Zig, Nim |
+| Systems | C, C++, Zig, Nim |
 | Mobile | Swift, Kotlin, Dart |
 | Functional | Haskell, Scala, Clojure, Elixir, Erlang, F# |
 | Scripting | Ruby, Perl, Lua, R, Bash/Zsh |
